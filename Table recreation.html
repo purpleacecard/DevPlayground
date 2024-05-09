@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <style>
+    :root {
+      --table-head-height: 18px;
+    }
+
+    * {
+      font-family: Arial;
+      padding: 0px;
+      margin: 0px;
+      border-radius: 0px;
+      border: 0px;
+      box-sizing: border-box;
+    }
+
+    body {
+      padding-top: 20px;
+    }
+
+    table {
+      background-color: aqua;
+      color: brown;
+      border: 1px solid black;
+      width: 100%;
+      white-space: nowrap;
+      border-collapse: collapse;
+    }
+
+    thead {
+      position: sticky;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+    }
+
+    tbody {}
+
+    th {
+      border: 1px solid black;
+      padding: 0px;
+      margin: 0px;
+      height: var(--table-head-height);
+
+      background-color: black;
+      color: antiquewhite;
+    }
+
+    td {
+      border: 1px solid black;
+      padding: 0px;
+      margin: 0px;
+      background-color: #691EFF;
+      color: white;
+    }
+
+    .expiry-date-select {
+      display: block;
+      width: 100%;
+      height: var(--table-head-height);
+    }
+  </style>
+
+</head>
+
+<body>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Barcode</th>
+        <th>Cost price</th>
+        <th>Selling price</th>
+        <th>Profit</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Date / Time</th>
+        <th>
+          <select id="expiry-date-select" class="expiry-date-select">
+            <option value="">Saved</option>
+            <option value="">changed</option>
+          </select>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Kelloggs</td>
+        <td>234567897654</td>
+        <td>1230</td>
+        <td>1500</td>
+        <td>350</td>
+        <td>1500</td>
+        <td>3</td>
+        <td>2024-12-10</td>
+        <td>2027-10-14</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Kelloggs</td>
+        <td>234567897654</td>
+        <td>1230</td>
+        <td>1500</td>
+        <td>350</td>
+        <td>1500</td>
+        <td>3</td>
+        <td>2024-12-10</td>
+        <td>2027-10-14</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Kelloggs</td>
+        <td>234567897654</td>
+        <td>1230</td>
+        <td>1500</td>
+        <td>350</td>
+        <td>1500</td>
+        <td>3</td>
+        <td>2024-12-10</td>
+        <td>2027-10-14</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Kelloggs</td>
+        <td>234567897654</td>
+        <td>1230</td>
+        <td>1500</td>
+        <td>350</td>
+        <td>1500</td>
+        <td>3</td>
+        <td>2024-12-10</td>
+        <td>2027-10-14</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+
+</html>

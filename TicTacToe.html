@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic Tac Toe</title>
+    <style>
+      body {
+        font-family: Arial;
+        margin: 0px;
+        padding: 12% 0px 0px;
+        /* width: 100vw; */
+        /* height: 100vh; */
+        background-color: #2d0054;
+      }
+      header {
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        background-color: rgb(36, 0, 56);
+        border-bottom: 3px solid salmon;
+        z-index: 100;
+      }
+      h1 {
+        font-family: sans-serif;
+        text-align: center;
+        margin: 0px;
+        padding: 5px 0px;
+        color: whitesmoke;
+      }
+      main {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        /* height: 100%; */
+      }
+      .time-label {
+        display: none;
+      }
+      #turn-timer {
+        color: white;
+        font-size: 20px;
+        font-family: Arial;
+        font-weight: bold;
+      }
+      .players-score,
+      .player-turn,
+      .result {
+        font-family: Arial;
+        font-size: 20px;
+        font-weight: bold;
+        color: whitesmoke;
+        margin: 10px 0px;
+        z-index: 1;
+      }
+      .player-turn-container {
+        display: flex;
+        align-items: center;
+      }
+      .green {
+        color: rgb(83, 255, 83);
+      }
+      .orange {
+        color: rgb(255, 172, 77);
+      }
+      .playing-table {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        row-gap: 3px;
+        column-gap: 3px;
+        padding: 3px;
+        border: 3px solid salmon;
+        background-color: rgb(118, 1, 154);
+        border-radius: 25px;
+        /* min-width: 80px;
+        min-height: 80px; */
+      }
+      .box:first-child {
+        border-top-left-radius: 20px;
+      }
+      .box:nth-child(3) {
+        border-top-right-radius: 20px;
+      }
+      .box:nth-child(7) {
+        border-bottom-left-radius: 20px;
+      }
+      .box:last-child {
+        border-bottom-right-radius: 20px;
+      }
+      .box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgb(162, 177, 255);
+        border: 3px solid black;
+        font-size: 150%;
+        /* border-radius: 10px; */
+        width: 10vw;
+        height: 10vw;
+        min-width: 30px;
+        min-height: 30px;
+        max-height: 70px;
+        max-width: 70px;
+        box-sizing: border-box;
+      }
+      .box:hover {
+        background-color: rgb(205, 214, 255);
+      }
+      .game-controllers {
+        margin: 10px 0px;
+      }
+      .new-game {
+        padding: 8px 0px;
+        width: 80px;
+        border: 4px double black;
+        background-color: #78ff88;
+      }
+      .info-div {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        background-color: rgba(0, 0, 0, 0.5);
+        width: 100%;
+        height: 100%;
+        z-index: 100;
+      }
+      .info {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 25px;
+        font-weight: bold;
+        background-color: white;
+        border: 7px solid black;
+        border-radius: 20px;
+        padding: 30px;
+      }
+      .reset {
+        padding: 8px 0px;
+        width: 80px;
+        border: 4px double black;
+        background-color: rgb(255, 130, 130);
+      }
+      .new-game:hover,
+      .reset:hover {
+        border: 4px solid black;
+      }
+      .cross-mark {
+        position: absolute;
+        height: 10px;
+        width: 200px;
+        background-color: white;
+        transform-origin: -20px 60px;
+        transform: rotateZ(45deg) scaleX(0%);
+        transition: transform 1s;
+      }
+      /* diagonal first way */
+      /* main:hover .cross-mark {
+        transform: rotateZ(45deg) scaleX(100%);
+      } */
+
+      /* Cross down */
+      /* .cross-mark {
+        transform: rotate(90deg) scaleX(0%);
+      }
+      main:hover .cross-mark {
+        transform: rotate(90deg) scaleX(90%) translateX(-70px);
+      } */
+
+      /* middle column cross down */
+      /* .cross-mark {
+        transform: rotate(90deg) scaleX(0%) translateY(-65px);
+      }
+      main:hover .cross-mark {
+        transform: rotate(90deg) scaleX(90%) translateX(-70px) translateY(-65px);
+      } */
+      /* last column cross down */
+      /* .cross-mark {
+        transform: rotate(90deg) scaleX(0%) translateY(-135px);
+      }
+      main:hover .cross-mark {
+        transform: rotate(90deg) scaleX(90%) translateX(-70px)
+          translateY(-135px);
+      } */
+
+      /* first row cross across */
+      /* .cross-mark {
+        transform: scaleX(0%) translateY(35px);
+      }
+      main:hover .cross-mark {
+        transform: scaleX(100%) translateY(35px);
+      } */
+      /* middle row cross across */
+      /* .cross-mark {
+        transform: scaleX(0%) translateY(100px);
+      }
+      main:hover .cross-mark {
+        transform: scaleX(100%) translateY(100px);
+      } */
+      /* last row cross across */
+      /* .cross-mark {
+        transform: scaleX(0%) translateY(170px);
+      }
+      main:hover .cross-mark {
+        transform: scaleX(102%) translateY(170px);
+      } */
+      /* diagonal other way */
+      /* .cross-mark {
+        transform-origin: 220px 60px;
+        transform: rotateZ(-45deg) scaleX(0%);
+      }
+      main:hover .cross-mark {
+        transform: rotateZ(-45deg) scaleX(100%);
+      } */
+    </style>
+  </head>
+  <body>
+    <header id="js-header">
+      <h1>Tic Tac Toe</h1>
+    </header>
+    <div class="info-div js-info-div">
+      <span class="info js-info">Player 1 won!</span>
+    </div>
+    <main>
+      <div class="players-score">
+        <span class="green"
+          ><span class="js-p1name"> Player 1 </span> (<span class="js-player1"
+            >0</span
+          >)</span
+        >
+        VS
+        <span class="orange"
+          ><span class="js-p2name"> Player 2 </span> (<span class="js-player2"
+            >0</span
+          >)</span
+        >
+      </div>
+      <div class="player-turn-container">
+        <div class="player-turn js-player-turn">Player 1's turn (✖️)</div>
+        <span id="turn-timer"> 20"</span>
+      </div>
+      <label class="time-label">
+        <input id="js-time-check" type="checkbox" />Use time
+      </label>
+      <div class="result js-result">In-Game</div>
+      <div class="playing-table">
+        <div class="box js-box"></div>
+        <div class="box js-box"></div>
+        <div class="box js-box"></div>
+        <div class="box js-box"></div>
+        <div class="box js-box"></div>
+        <div class="box js-box"></div>
+        <div class="box js-box"></div>
+        <div class="box js-box"></div>
+        <div class="cross-mark"></div>
+        <div class="box js-box"></div>
+      </div>
+      <div class="game-controllers">
+        <button class="new-game js-new-game">New game</button>
+        <button class="reset js-reset">Reset</button>
+      </div>
+    </main>
+    <script>
+      const header = document.getElementById('js-header');
+      const p1ScoreSpan = document.querySelector('.js-player1');
+      const p2ScoreSpan = document.querySelector('.js-player2');
+      const playerTurnDiv = document.querySelector('.js-player-turn');
+      const resultDiv = document.querySelector('.js-result');
+      const boxes = document.querySelectorAll('.js-box');
+      const newGameButton = document.querySelector('.js-new-game');
+      const resetButton = document.querySelector('.js-reset');
+      const timeCheckbox = document.getElementById('js-time-check');
+      const p1nameSpan = document.querySelector('.js-p1name');
+      const p2nameSpan = document.querySelector('.js-p2name');
+      const turnTimer = document.getElementById('turn-timer');
+      const infoDiv = document.querySelector('.js-info-div');
+      const infoSpan = document.querySelector('.js-info');
+      let winner;
+      let timer;
+      let p1Score = 0;
+      let p2Score = 0;
+      let allHaveContent = true;
+
+      let turnStart = 10;
+      let turn = 0;
+      function playCharacter() {
+        showTimer();
+        boxes.forEach((box) => {
+          box.addEventListener('click', () => {
+            if (winner == 'P1' || winner == 'P2') {
+              return;
+            }
+            if (box.innerText !== '') {
+              console.error('User already played there');
+              return;
+            }
+            if (turn == 0) {
+              box.innerText = '✖️';
+              playerTurnDiv.innerText = `${p2name}'s turn (⭕)`;
+              clearInterval(timer);
+              turnTimer.innerHTML = `${turnStart}"`;
+              if (timeCheckbox.checked == true) {
+                looseTimer();
+              }
+              turn = 1;
+            } else if (turn == 1) {
+              box.innerText = '⭕';
+              playerTurnDiv.innerText = `${p1name}'s turn (✖️)`;
+              clearInterval(timer);
+              turnTimer.innerHTML = `${turnStart}"`;
+              if (timeCheckbox.checked == true) {
+                looseTimer();
+              }
+              turn = 0;
+            }
+            processResult();
+          });
+        });
+      }
+      playCharacter();
+
+      function showTimer() {
+        if (timeCheckbox.checked == false) {
+          turnTimer.style = 'display: none';
+        } else {
+          turnTimer.style = 'display: block';
+        }
+      }
+
+      function gameChange() {
+        if (winner == 'P1' || winner == 'P2') {
+          return;
+        }
+        if (turn == 0) {
+          playerTurnDiv.innerText = `${p2name}'s turn (⭕)`;
+          turn = 1;
+        } else if (turn == 1) {
+          playerTurnDiv.innerText = `${p1name}'s turn (✖️)`;
+          turn = 0;
+        }
+      }
+
+      //|0,4,8|2,4,6|0,1,2|3,4,5|6,7,8|0,3,6|1,4,7|2,5,8|
+      let player1 = [];
+      let player2 = [];
+      const winIndex = [
+        [0, 4, 8],
+        [2, 4, 6],
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+      ];
+      let p1name = 'Player 1';
+      let p2name = 'Player 2';
+      function processResult() {
+        boxes.forEach((box, index) => {
+          // console.log({ box }, { index });
+          if (box.innerText == '✖️') {
+            player1.push(index);
+          } else if (box.innerText == '⭕') {
+            player2.push(index);
+          }
+        });
+        // console.log({ player1 }, { player2 });
+        decideWinner(p1name, p2name);
+      }
+      // processResult();
+
+      function changeName(elementSpan, name) {
+        elementSpan.innerHTML = `<input id="pName" style="width: 80px" type="text"\>`;
+        document.getElementById('pName').addEventListener('keydown', (e) => {
+          if (e.key == 'Enter') {
+            if (name == '0') {
+              p1name = document.getElementById('pName').value;
+            } else if (name == '1') {
+              p2name = document.getElementById('pName').value;
+            }
+            elementSpan.innerHTML = `${document.getElementById('pName').value}`;
+          }
+        });
+      }
+
+      p1nameSpan.addEventListener('click', () => {
+        changeName(p1nameSpan, 0);
+        document.getElementById('pName').focus();
+      });
+
+      p2nameSpan.addEventListener('click', () => {
+        changeName(p2nameSpan, 1);
+        document.getElementById('pName').focus();
+      });
+
+      function decideWinner(p1name, p2name) {
+        let player1Score;
+        let player2Score;
+
+        determineDraw();
+
+        winIndex.forEach((array) => {
+          // console.log({ array }, { player1 });
+          player1Score = isSubset(array, player1);
+          player2Score = isSubset(array, player2);
+          if (player1Score == true) {
+            winner = 'P1';
+            p1Score++;
+            p1ScoreSpan.innerText = p1Score;
+            resultDiv.innerText = `${p1name} wins`;
+            playerTurnDiv.innerText = '🥇';
+            clearInterval(timer);
+            turnTimer.innerHTML = ` ${turnStart}"`;
+            infoSpan.innerText = `${p1name} wins`;
+            infoDiv.style = 'display: flex;';
+            setTimeout(() => {
+              infoDiv.style = 'display: none;';
+              newGame();
+            }, 1000);
+            console.log('player 1 wins');
+            return;
+          } else if (player2Score == true) {
+            winner = 'P2';
+            p2Score++;
+            p2ScoreSpan.innerText = p2Score;
+            resultDiv.innerText = `${p2name} wins`;
+            playerTurnDiv.innerText = '🥇';
+            clearInterval(timer);
+            turnTimer.innerHTML = `${turnStart}"`;
+            infoSpan.innerText = `${p2name} wins`;
+            infoDiv.style = 'display: flex;';
+            setTimeout(() => {
+              infoDiv.style = 'display: none;';
+              newGame();
+            }, 1000);
+            console.log('Player 2 wins');
+            return;
+          }
+        });
+
+        // console.log(winner + ' wins');
+      }
+      function determineDraw() {
+        allBoxesFull();
+        if (allHaveContent == true) {
+          resultDiv.innerText = 'Draw';
+          clearInterval(timer);
+          turnTimer.innerHTML = `${turnStart}"`;
+          infoSpan.innerText = `Draw`;
+          infoDiv.style = 'display: flex;';
+          setTimeout(() => {
+            infoDiv.style = 'display: none;';
+            newGame();
+          }, 1000);
+        }
+      }
+
+      function isSubset(smallArr, largeArr) {
+        return smallArr.every((element) => largeArr.includes(element));
+      }
+
+      function clearBoxes() {
+        boxes.forEach((box) => {
+          box.innerText = '';
+        });
+      }
+
+      function looseTimer() {
+        let num = turnStart;
+        timer = setInterval(() => {
+          num--;
+          turnTimer.innerText = `${num}"`;
+          console.log(num);
+          if (num === 0) {
+            clearInterval(timer);
+            looseTimer();
+            if (turn == 0) {
+              gameChange();
+            } else {
+              gameChange();
+            }
+          }
+        }, 1000);
+      }
+
+      function resetGame() {
+        turn = 0;
+        winner = undefined;
+        player1 = [];
+        player2 = [];
+        p1Score = 0;
+        p2Score = 0;
+        p1ScoreSpan.innerText = p1Score;
+        p2ScoreSpan.innerText = p2Score;
+        playerTurnDiv.innerText = `Player 1's turn (✖️)`;
+        resultDiv.innerText = 'In-Game';
+        clearInterval(timer);
+        turnTimer.innerHTML = `${turnStart}"`;
+        allHaveContent = true;
+        clearBoxes();
+      }
+
+      function newGame() {
+        winner = undefined;
+        player1 = [];
+        player2 = [];
+        if (turn == 0) {
+          playerTurnDiv.innerText = `${p1name}'s turn (✖️)`;
+        } else {
+          playerTurnDiv.innerText = `${p2name}'s turn (⭕)`;
+        }
+        clearInterval(timer);
+        turnTimer.innerHTML = `${turnStart}"`;
+        resultDiv.innerText = 'In-Game';
+        allHaveContent = true;
+        clearBoxes();
+      }
+
+      newGameButton.addEventListener('click', newGame);
+      resetButton.addEventListener('click', resetGame);
+
+      function allBoxesFull() {
+        allHaveContent = true;
+        boxes.forEach((box) => {
+          if (box.innerText == '') {
+            allHaveContent = false;
+          }
+        });
+        console.log(allHaveContent);
+      }
+
+      header.addEventListener('dblclick', () => {
+        if (timeCheckbox.checked == false) {
+          timeCheckbox.checked = true;
+          clearInterval(timer);
+          turnTimer.innerHTML = `${turnStart}"`;
+        } else {
+          timeCheckbox.checked = false;
+          clearInterval(timer);
+          turnTimer.innerHTML = `${turnStart}"`;
+        }
+        showTimer();
+      });
+    </script>
+  </body>
+</html>

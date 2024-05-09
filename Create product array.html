@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create products array</title>
+  </head>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      background-color: #222;
+    }
+    input {
+      height: 40px;
+      margin: 10px;
+      font-size: 20px;
+      padding: 0px 10px;
+      background-color: bisque;
+    }
+  </style>
+  <body>
+    <input type="text" id="product-name" placeholder="name" />
+    <input type="text" id="image-location" placeholder="imageLocation" />
+    <input type="text" id="price-naira" placeholder="priceNaira" />
+    <input type="text" id="keywords" placeholder="keywords" />
+    <script>
+      let id;
+      const isIdAvailable = JSON.parse(localStorage.getItem('id'));
+      if (typeof isIdAvailable == 'number') {
+        id = isIdAvailable;
+      } else {
+        id = 1;
+      }
+
+      let data;
+      const isArrayAvailable = JSON.parse(localStorage.getItem('data'));
+      if (Array.isArray(isArrayAvailable)) {
+        data = isArrayAvailable;
+      } else {
+        data = [];
+      }
+      let objectDef = {};
+      const productName = document.getElementById('product-name');
+      const imageLocation = document.getElementById('image-location');
+      const priceNaira = document.getElementById('price-naira');
+      const keywords = document.getElementById('keywords');
+
+      function getRandomRating() {
+        const ratings = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
+
+        const randomIndex = Math.floor(Math.random() * ratings.length);
+
+        return ratings[randomIndex];
+      }
+
+      const tags = document.querySelectorAll('input');
+      tags.forEach((tag, tagIndex) => {
+        tag.addEventListener('keyup', (event) => {
+          if (tag.value === '') {
+            return;
+          }
+
+          if (event.key == 'Enter') {
+            let elementPlaceholder = `${tag.placeholder}`;
+            objectDef[elementPlaceholder] = tag.value;
+            tag.style = 'background-color: skyblue;';
+            tag.value = '';
+
+            if (tags.length - 1 == tagIndex) {
+              // objectDef.priceCents = function () {
+              //   return this.priceKobo;
+              // };
+              // objectDef['ratingCount'] = Math.floor(Math.random() * 20000);
+              objectDef['id'] = id;
+              id += 1;
+              objectDef['rating'] = {
+                ['count']: Math.floor(Math.random() * 20000),
+                ['stars']: getRandomRating(),
+              };
+              objectDef['category'] = 'books';
+              objectDef['pricekobo'] = objectDef['priceNaira'] * 100;
+              objectDef['priceCents'] = (objectDef['priceNaira'] * 100) / 800;
+              objectDef['quantityLeft'] = Math.floor(Math.random() * 100);
+              objectDef['keywords'] = objectDef['keywords'].split(' ', 5);
+              objectDef['priceNaira'] = Number(objectDef['priceNaira']);
+              data.push(objectDef);
+              objectDef = {};
+              tags[0].focus();
+              tags.forEach((tag) => {
+                tag.style = 'background-color: bisque;';
+              });
+              console.log(data[data.length - 1]);
+              localStorage.setItem('id', JSON.stringify(id));
+              localStorage.setItem('data', JSON.stringify(data));
+              return;
+            }
+            tags[tagIndex + 1].focus();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
